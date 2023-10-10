@@ -1,0 +1,69 @@
+package controlDeAcceso;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
+
+public class ResgistroDAO {
+private Connection con;
+private PreparedStatement ps;
+private ResultSet rs;
+
+private Connection conectar() {
+	String url="jdbc:mysql://localhost:3306/control_de_Acceso";
+	String usuario="root";
+	String contrasena="";
+	try {
+		con =DriverManager.getConnection(url,usuario,contrasena);
+	} catch (SQLException e) {
+		JOptionPane.showMessageDialog(null, "ERROR AL CONECTAR"+e);
+		e.printStackTrace();
+	}
+	return con;
+}
+public boolean guardarRegistro(Registro r) {
+	boolean guarda=false;
+	String sql ="insert into registros values(0,?,?,?,?)";
+	conectar();
+	try {
+		ps=con.prepareStatement(sql);
+	    ps.setInt(1, r.getCodAcc());
+	    ps.setString(2, r.getNombre());
+	    ps.setString(3, r.getFecha());
+	    ps.setString(4, r.getHora());
+	    int g=ps.executeUpdate();
+	    if(g>0) {
+	    	JOptionPane.showMessageDialog(null, "GUARDADO");
+	    	guarda=true;
+	    }else {
+	    	JOptionPane.showMessageDialog(null, "NO GUARDADO");
+	    }
+	} catch (SQLException e) {
+	JOptionPane.showMessageDialog(null, "ERROR AL GUARDAR"+e);
+		e.printStackTrace();
+	}
+	
+	
+	return guarda;
+	
+}
+public Registro consultarReg(int parseInt) {
+	Registro r =new Registro();
+	String sql="Select * from registros where cosAcc=? ";
+	conectar();
+	try {
+		ps=con.prepareStatement(sql);
+		ps.setInt(1, cod);
+		rs =ps.executeQuery();
+		
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return null;
+}
+}
